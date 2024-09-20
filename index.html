@@ -5,6 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gamer's Paradise</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+      <script>
+    async function handleDeposit() {
+        const amount = document.getElementById('amount').value;
+        const requestId = `${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+        const apiKey = 'api_key_41106947-dfb3-43d8-a123-b18391d574c0';
+        const apiSecret = '3039ce39-df04-4b9e-a6e4-82fe695f1a36
+
+';
+
+        if (amount) {
+            try {
+                const response = await fetch('http://192.168.18.239:3000/api/p2p/initiate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apiKey': apiKey,
+                        'apiSecret': apiSecret
+                    },
+                    body: JSON.stringify({ amount, requestId })
+                });
+
+                const result = await response.json();
+                console.log(result)
+
+                if (response.ok) {
+                    // Check if transaction was successful and has a payment link
+                    if (result.status == 200 && result.data.paymentLink) {
+                        window.location.href = result.data.paymentLink;
+                        window.open(result.data.paymentLink, '_blank');
+                    } else {
+                        alert(`Error: ${result.message}`);
+                    }
+                } else {
+                    alert(`Error: ${result.message}`);
+                }
+            } catch (error) {
+                alert('An error occurred while initiating the deposit.');
+            }
+
+            // Hide the modal after attempting to process
+            document.getElementById('deposit-modal').classList.add('hidden');
+        } else {
+            alert('Please enter an amount.');
+        }
+    }
+</script>
 </head>
 <body class="bg-gray-900 text-white">
     <nav class="bg-gray-800 py-4">
@@ -157,52 +203,7 @@
         </div>
     </footer>
 
-  <script>
-    async function handleDeposit() {
-        const amount = document.getElementById('amount').value;
-        const requestId = `${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-        const apiKey = 'api_key_41106947-dfb3-43d8-a123-b18391d574c0';
-        const apiSecret = '3039ce39-df04-4b9e-a6e4-82fe695f1a36
 
-';
-
-        if (amount) {
-            try {
-                const response = await fetch('http://192.168.18.239:3000/api/p2p/initiate', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'apiKey': apiKey,
-                        'apiSecret': apiSecret
-                    },
-                    body: JSON.stringify({ amount, requestId })
-                });
-
-                const result = await response.json();
-                console.log(result)
-
-                if (response.ok) {
-                    // Check if transaction was successful and has a payment link
-                    if (result.status == 200 && result.data.paymentLink) {
-                        window.location.href = result.data.paymentLink;
-                        window.open(result.data.paymentLink, '_blank');
-                    } else {
-                        alert(`Error: ${result.message}`);
-                    }
-                } else {
-                    alert(`Error: ${result.message}`);
-                }
-            } catch (error) {
-                alert('An error occurred while initiating the deposit.');
-            }
-
-            // Hide the modal after attempting to process
-            document.getElementById('deposit-modal').classList.add('hidden');
-        } else {
-            alert('Please enter an amount.');
-        }
-    }
-</script>
 
 </body>
 </html>
